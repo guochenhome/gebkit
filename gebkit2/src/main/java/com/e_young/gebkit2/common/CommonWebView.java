@@ -49,14 +49,14 @@ public class CommonWebView extends WebView {
         init();
     }
 
-    private int text_size=1;
+    private int TextSize=1;
 
-    public int getText_size() {
-        return text_size;
+    public int getTextSize() {
+        return TextSize;
     }
 
-    public void setText_size(int text_size) {
-        this.text_size = text_size;
+    public void setTextSize(int textSize) {
+        TextSize = textSize;
     }
 
     private void init() {
@@ -130,9 +130,7 @@ public class CommonWebView extends WebView {
     private String genJavascriptInterfacesString() {
         // 此处添加自己具体要注入的 JS 代码段
         StringBuilder script = new StringBuilder();
-        script.append("javascript:(function JsAddJavascriptInterface_(){");
-        // add ...
-        script.append("javascript:jsChangeSize(" + text_size + ")");
+        script.append("javascript:jsChangeSize("+TextSize+")");
 
 
         return script.toString();
