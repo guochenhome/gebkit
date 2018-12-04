@@ -49,6 +49,16 @@ public class CommonWebView extends WebView {
         init();
     }
 
+    private int text_size=1;
+
+    public int getText_size() {
+        return text_size;
+    }
+
+    public void setText_size(int text_size) {
+        this.text_size = text_size;
+    }
+
     private void init() {
         removeSearchBoxImpl();
     }
@@ -122,7 +132,8 @@ public class CommonWebView extends WebView {
         StringBuilder script = new StringBuilder();
         script.append("javascript:(function JsAddJavascriptInterface_(){");
         // add ...
-        script.append("})()");
+        script.append("javascript:jsChangeSize(" + text_size + ")");
+
 
         return script.toString();
     }
