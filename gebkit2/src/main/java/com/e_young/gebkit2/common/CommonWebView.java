@@ -49,16 +49,6 @@ public class CommonWebView extends WebView {
         init();
     }
 
-    private int TextSize=1;
-
-    public int getTextSize() {
-        return TextSize;
-    }
-
-    public void setTextSize(int textSize) {
-        TextSize = textSize;
-    }
-
     private void init() {
         removeSearchBoxImpl();
     }
@@ -130,8 +120,9 @@ public class CommonWebView extends WebView {
     private String genJavascriptInterfacesString() {
         // 此处添加自己具体要注入的 JS 代码段
         StringBuilder script = new StringBuilder();
-        script.append("javascript:jsChangeSize("+TextSize+")");
-
+        script.append("javascript:(function JsAddJavascriptInterface_(){");
+        // add ...
+        script.append("})()");
 
         return script.toString();
     }
