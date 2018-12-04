@@ -25,6 +25,12 @@ import android.webkit.WebViewClient;
  */
 public class CommonWebViewClient extends WebViewClient {
 
+    private DoPageFinishedLiseter liseter;
+
+    public CommonWebViewClient(DoPageFinishedLiseter liseter) {
+        this.liseter = liseter;
+    }
+
     @Override
     public void onLoadResource(WebView view, String url) {
         try {
@@ -70,6 +76,9 @@ public class CommonWebViewClient extends WebViewClient {
             if (view instanceof CommonWebView) {
                 CommonWebView webview = (CommonWebView) view;
                 webview.injectJavascriptInterfaces();
+                if (liseter != null) {
+                    liseter.doPageFinished(view, url);
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -103,6 +112,10 @@ public class CommonWebViewClient extends WebViewClient {
         super.shouldOverrideUrlLoading(view, url);
         // 默认不调用第三方浏览器
         return false;
+    }
+
+    public interface DoPageFinishedLiseter {
+        void doPageFinished(WebView view, String url);
     }
 
 }

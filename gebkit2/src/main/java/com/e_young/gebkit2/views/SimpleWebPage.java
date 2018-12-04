@@ -39,11 +39,21 @@ import static android.webkit.WebView.setWebContentsDebuggingEnabled;
 /**
  * @author RePlugin Team
  */
-public class SimpleWebPage extends RelativeLayout {
+public class SimpleWebPage extends RelativeLayout implements CommonWebViewClient.DoPageFinishedLiseter {
 
     // 使用者提供的Context
     private Context mUserContext;
     private SimpleWebView mWebView;
+
+    private WebviewFinshLiseter finshLiseter;
+
+    public WebviewFinshLiseter getFinshLiseter() {
+        return finshLiseter;
+    }
+
+    public void setFinshLiseter(WebviewFinshLiseter finshLiseter) {
+        this.finshLiseter = finshLiseter;
+    }
 
     public SimpleWebPage(Context context) {
         super(context.getApplicationContext());
@@ -69,7 +79,7 @@ public class SimpleWebPage extends RelativeLayout {
         mWebView.setBackgroundDrawable(new ColorDrawable(Color.WHITE));
         addView(mWebView, rootView);
         // 辅助处理各种通知、请求事件，如果不设置WebViewClient，请求会跳转系统浏览器
-        mWebView.setWebViewClient(new CommonWebViewClient());
+        mWebView.setWebViewClient(new CommonWebViewClient(this));
         // 辅助处理JavaScript、页喧解析渲染、页面标题、加载进度等等
         mWebView.setWebChromeClient(new CommonWebChromeClient());
 
@@ -94,10 +104,10 @@ public class SimpleWebPage extends RelativeLayout {
         // 注意：不允许使用File协议，则不会存在通过file协议的跨源安全威胁，但同时也限制了WebView的功能，使其不能加载本地的HTML文件
         ws.setAllowFileAccess(false);
         if (Build.VERSION.SDK_INT >= 16) {
-        // 设置是否允许通过file url加载的Javascript读取其他的本地文件
-        ws.setAllowFileAccessFromFileURLs(false);
-        // 设置是否允许通过file url加载的Javascript可以访问其他的源，包括其他的文件和http,https等其他的源
-        ws.setAllowUniversalAccessFromFileURLs(false);
+            // 设置是否允许通过file url加载的Javascript读取其他的本地文件
+            ws.setAllowFileAccessFromFileURLs(false);
+            // 设置是否允许通过file url加载的Javascript可以访问其他的源，包括其他的文件和http,https等其他的源
+            ws.setAllowUniversalAccessFromFileURLs(false);
         }
         // 防止个人敏感数据泄漏
         ws.setSavePassword(false);
@@ -115,5 +125,16 @@ public class SimpleWebPage extends RelativeLayout {
 
     public WebView getWebView() {
         return mWebView;
+    }
+
+    @Override
+    public void doPageFinished(WebView view, String url) {
+        if (finshLiseter != null) {
+            finshLiseter.doWebviewFinsh(view, url);
+        }
+    }
+
+    public interface WebviewFinshLiseter {
+        void doWebviewFinsh(WebView webView, String url);
     }
 }
